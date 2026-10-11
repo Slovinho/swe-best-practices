@@ -15,24 +15,21 @@ load_dotenv(Path(__file__).resolve().parents[2] / ".env")
 app = FastAPI(title="Ratings Workflow")
 
 
+# Your turn: implement this route. Delete this comment when the behavior is yours.
+#
+# A process supervisor calls GET /health to decide whether to send traffic.
+# Postgres has to accept a query before the answer is yes.
+#
+# Handle three situations, and choose a status code for each:
+# - DATABASE_URL is not set
+# - the database cannot be reached or will not run a query
+# - a trivial query succeeds
+#
+# Bound how long a dead database can stall the call.
+# A bug in this function should still surface as a server error.
+# One new connection per call is enough.
+#
+# os, JSONResponse, Error, and connect are already imported.
 @app.get("/health")
 def health():
-    database_url = os.environ.get("DATABASE_URL")
-    if not database_url:
-        return JSONResponse(
-            status_code=503,
-            content={"status": "degraded", "database": "missing_config"},
-        )
-
-    try:
-        # A new connection per check. A pool earns its complexity once real
-        # requests exist; a health probe does not need one.
-        with connect(database_url, connect_timeout=3) as conn:
-            conn.execute("SELECT 1")
-    except Error:
-        return JSONResponse(
-            status_code=503,
-            content={"status": "degraded", "database": "unreachable"},
-        )
-
-    return {"status": "ok", "database": "ok"}
+    raise NotImplementedError
